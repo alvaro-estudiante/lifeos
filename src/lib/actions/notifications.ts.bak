@@ -1,0 +1,84 @@
+'use server';
+
+import webpush from 'web-push';
+import { getSessionOrThrow } from '@/lib/auth/session';
+import { createClient } from '@/lib/supabase/server';
+
+if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    'mailto:tu@email.com',
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+  );
+}
+
+export async function subscribeToPush(subscription: {
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+}) {
+  const { user, supabase } = await getSessionOrThrow();
+  
+  await supabase.from('push_subscriptions').upsert({
+    user_id: user.id,
+    ...subscription,
+  });
+}
+
+export async function unsubscribeFromPush(endpoint: string) {
+  const { user, supabase } = await getSessionOrThrow();
+  
+  await supabase
+    .from('push_subscriptions')
+    .delete()
+    .eq('user_id', user.id)
+    .eq('endpoint', endpoint);
+}
+
+export async function sendPushNotification(
+  userId: string,
+  title: string,
+  body: string,
+  url?: string
+) {
+  const supabase = createClient();
+  // Using service role key logic or elevated privileges usually required here if triggered by background job
+  // For now assuming invoked by user context or we need admin client. 
+  // Standard client has RLS. Sending push to *other* users requires admin. 
+  // Sending to self is fine.
+  
+  const { data: subscriptions } = await supabase
+    .from('push_subscriptions')
+    .select('*')
+    .eq('user_id', userId);
+  
+  if (!subscriptions?.length) return;
+  
+  const payload = JSON.stringify({
+    title,
+    body,
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/badge-72x72.png',
+    url: url || '/',
+  });
+  
+  for (const sub of subscriptions) {
+    try {
+      await webpush.sendNotification(
+        {
+          endpoint: sub.endpoint,
+          keys: { p256dh: sub.p256dh, auth: sub.auth },
+        },
+        payload
+      );
+    } catch (error) {
+      // Eliminar suscripciones inválidas
+      if ((error as any).statusCode === 410) {
+        await supabase
+          .from('push_subscriptions')
+          .delete()
+          .eq('id', sub.id);
+      }
+    }
+  }
+}

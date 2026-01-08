@@ -1,0 +1,57 @@
+'use client';
+
+import { Bell, BellOff } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
+import { useToast } from '@/hooks/use-toast';
+
+export function NotificationSettings() {
+  const { isSupported, isSubscribed, permission, subscribe, unsubscribe } = usePushNotifications();
+  const { toast } = useToast();
+
+  const handleToggle = async (enabled: boolean) => {
+    if (enabled) {
+      const success = await subscribe();
+      if (success) {
+        toast({ title: '✓ Notificaciones activadas' });
+      } else if (permission === 'denied') {
+        toast({ 
+          title: 'Notificaciones bloqueadas',
+          description: 'Actívalas en la configuración de tu navegador',
+          variant: 'destructive'
+        });
+      }
+    } else {
+      await unsubscribe();
+      toast({ title: 'Notificaciones desactivadas' });
+    }
+  };
+
+  if (!isSupported) {
+    return (
+      <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl">
+        <div className="flex items-center gap-3">
+          <BellOff className="h-5 w-5 text-muted-foreground" />
+          <span className="text-muted-foreground">
+            Notificaciones no soportadas en este navegador
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-between p-4 bg-card rounded-xl border">
+      <div className="flex items-center gap-3">
+        <Bell className={`h-5 w-5 ${isSubscribed ? 'text-primary' : 'text-muted-foreground'}`} />
+        <div>
+          <p className="font-medium">Notificaciones push</p>
+          <p className="text-sm text-muted-foreground">
+            Recordatorios de tareas, hábitos y entrenamientos
+          </p>
+        </div>
+      </div>
+      <Switch checked={isSubscribed} onCheckedChange={handleToggle} />
+    </div>
+  );
+}

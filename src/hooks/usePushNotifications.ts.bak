@@ -1,0 +1,74 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { subscribeToPush, unsubscribeFromPush } from '@/lib/actions/notifications';
+
+export function usePushNotifications() {
+  const [isSupported, setIsSupported] = useState(false);
+  const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+  const [permission, setPermission] = useState<NotificationPermission>('default');
+
+  useEffect(() => {
+    const supported = 'serviceWorker' in navigator && 'PushManager' in window;
+    setIsSupported(supported);
+    
+    if (supported) {
+      setPermission(Notification.permission);
+      
+      // Obtener suscripción existente
+      navigator.serviceWorker.ready.then((reg) => {
+        reg.pushManager.getSubscription().then(setSubscription);
+      });
+    }
+  }, []);
+
+  const subscribe = useCallback(async () => {
+    if (!isSupported) return false;
+
+    try {
+      // Pedir permiso
+      const perm = await Notification.requestPermission();
+      setPermission(perm);
+      
+      if (perm !== 'granted') return false;
+
+      // Obtener service worker
+      const registration = await navigator.serviceWorker.ready;
+      
+      // Suscribirse
+      const sub = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+      });
+      
+      // Guardar en servidor
+      await subscribeToPush({
+        endpoint: sub.endpoint,
+        p256dh: btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(sub.getKey('p256dh')!)))),
+        auth: btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(sub.getKey('auth')!)))),
+      });
+      
+      setSubscription(sub);
+      return true;
+    } catch (error) {
+      console.error('Push subscription error:', error);
+      return false;
+    }
+  }, [isSupported]);
+
+  const unsubscribe = useCallback(async () => {
+    if (!subscription) return;
+    
+    await subscription.unsubscribe();
+    await unsubscribeFromPush(subscription.endpoint);
+    setSubscription(null);
+  }, [subscription]);
+
+  return {
+    isSupported,
+    isSubscribed: !!subscription,
+    permission,
+    subscribe,
+    unsubscribe,
+  };
+}
