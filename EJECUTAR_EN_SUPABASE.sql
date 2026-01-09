@@ -336,7 +336,35 @@ CREATE POLICY "Users own budgets" ON budgets FOR ALL USING (auth.uid() = user_id
 CREATE POLICY "Users own transactions" ON transactions FOR ALL USING (auth.uid() = user_id);
 
 -- =============================================
--- PARTE 8: ÍNDICES PARA RENDIMIENTO
+-- PARTE 8: RECETAS
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS recipes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  prep_time INTEGER DEFAULT 0,
+  cook_time INTEGER DEFAULT 0,
+  servings INTEGER DEFAULT 2,
+  calories NUMERIC(8,2),
+  protein NUMERIC(8,2),
+  carbs NUMERIC(8,2),
+  fat NUMERIC(8,2),
+  ingredients JSONB DEFAULT '[]',
+  instructions JSONB DEFAULT '[]',
+  tags TEXT[] DEFAULT '{}',
+  is_ai_generated BOOLEAN DEFAULT false,
+  is_saved BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE recipes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users own recipes" ON recipes FOR ALL USING (auth.uid() = user_id);
+
+-- =============================================
+-- PARTE 9: ÍNDICES PARA RENDIMIENTO
 -- =============================================
 
 CREATE INDEX IF NOT EXISTS idx_meals_user_date ON meals(user_id, meal_date);
@@ -348,9 +376,10 @@ CREATE INDEX IF NOT EXISTS idx_workouts_user_date ON workouts(user_id, workout_d
 CREATE INDEX IF NOT EXISTS idx_transactions_user_date ON transactions(user_id, transaction_date);
 CREATE INDEX IF NOT EXISTS idx_transactions_account ON transactions(account_id);
 CREATE INDEX IF NOT EXISTS idx_budgets_user_month ON budgets(user_id, month);
+CREATE INDEX IF NOT EXISTS idx_recipes_user ON recipes(user_id);
 
 -- =============================================
--- PARTE 9: TRIGGER PARA NUEVOS USUARIOS
+-- PARTE 10: TRIGGER PARA NUEVOS USUARIOS
 -- Crea automáticamente perfil, objetivos y datos iniciales
 -- =============================================
 
