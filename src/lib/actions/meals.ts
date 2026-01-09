@@ -108,7 +108,7 @@ export async function addMealItem(
     await recalculateMealTotals(mealId);
   }
 
-  revalidatePath("/nutrition/meals");
+  revalidatePath("/dashboard/nutrition/meals");
 }
 
 export async function deleteMealItem(itemId: string, mealId: string) {
@@ -122,7 +122,7 @@ export async function deleteMealItem(itemId: string, mealId: string) {
   if (error) throw new Error(error.message);
 
   await recalculateMealTotals(mealId);
-  revalidatePath("/nutrition/meals");
+  revalidatePath("/dashboard/nutrition/meals");
 }
 
 export async function copyMealsFromDate(sourceDate: string, targetDate: string) {
@@ -194,7 +194,7 @@ export async function copyMealsFromDate(sourceDate: string, targetDate: string) 
     }
   }
 
-  revalidatePath("/nutrition/meals");
+  revalidatePath("/dashboard/nutrition/meals");
 }
 
 async function recalculateMealTotals(mealId: string) {

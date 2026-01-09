@@ -90,8 +90,8 @@ export async function createHabit(habit: NewHabit) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/habits");
-  revalidatePath("/tasks/today");
+  revalidatePath("/dashboard/habits");
+  revalidatePath("/dashboard/tasks/today");
 }
 
 export async function updateHabit(id: string, habit: Partial<NewHabit>) {
@@ -104,8 +104,8 @@ export async function updateHabit(id: string, habit: Partial<NewHabit>) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/habits");
-  revalidatePath("/tasks/today");
+  revalidatePath("/dashboard/habits");
+  revalidatePath("/dashboard/tasks/today");
 }
 
 export async function logHabit(habitId: string, date: string, value: number) {
@@ -142,8 +142,8 @@ export async function logHabit(habitId: string, date: string, value: number) {
 
   // TODO: Recalculate streak
   
-  revalidatePath("/habits");
-  revalidatePath("/tasks/today");
+  revalidatePath("/dashboard/habits");
+  revalidatePath("/dashboard/tasks/today");
 }
 
 export async function deleteHabit(id: string) {
@@ -157,5 +157,5 @@ export async function deleteHabit(id: string) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/habits");
+  revalidatePath("/dashboard/habits");
 }

@@ -59,7 +59,7 @@ export async function addExercise(exercise: NewExercise) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/fitness/exercises");
+  revalidatePath("/dashboard/fitness/exercises");
 }
 
 export async function updateExercise(id: string, exercise: Partial<NewExercise>) {
@@ -73,7 +73,7 @@ export async function updateExercise(id: string, exercise: Partial<NewExercise>)
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/fitness/exercises");
+  revalidatePath("/dashboard/fitness/exercises");
 }
 
 export async function deleteExercise(id: string) {
@@ -87,5 +87,5 @@ export async function deleteExercise(id: string) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/fitness/exercises");
+  revalidatePath("/dashboard/fitness/exercises");
 }

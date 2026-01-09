@@ -80,8 +80,8 @@ export async function createTask(task: NewTask) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/tasks");
-  revalidatePath("/tasks/today");
+  revalidatePath("/dashboard/tasks");
+  revalidatePath("/dashboard/tasks/today");
 }
 
 export async function updateTask(id: string, task: Partial<NewTask>) {
@@ -95,8 +95,8 @@ export async function updateTask(id: string, task: Partial<NewTask>) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/tasks");
-  revalidatePath("/tasks/today");
+  revalidatePath("/dashboard/tasks");
+  revalidatePath("/dashboard/tasks/today");
 }
 
 export async function completeTask(id: string) {
@@ -113,8 +113,8 @@ export async function completeTask(id: string) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/tasks");
-  revalidatePath("/tasks/today");
+  revalidatePath("/dashboard/tasks");
+  revalidatePath("/dashboard/tasks/today");
 }
 
 export async function deleteTask(id: string) {
@@ -128,6 +128,6 @@ export async function deleteTask(id: string) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/tasks");
-  revalidatePath("/tasks/today");
+  revalidatePath("/dashboard/tasks");
+  revalidatePath("/dashboard/tasks/today");
 }

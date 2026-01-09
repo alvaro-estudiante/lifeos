@@ -47,7 +47,7 @@ export async function addPantryItem(item: NewPantryItem) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/nutrition/pantry");
+  revalidatePath("/dashboard/nutrition/pantry");
 }
 
 export async function updatePantryItem(id: string, item: Partial<NewPantryItem>) {
@@ -60,7 +60,7 @@ export async function updatePantryItem(id: string, item: Partial<NewPantryItem>)
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/nutrition/pantry");
+  revalidatePath("/dashboard/nutrition/pantry");
 }
 
 export async function deletePantryItem(id: string) {
@@ -74,5 +74,5 @@ export async function deletePantryItem(id: string) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/nutrition/pantry");
+  revalidatePath("/dashboard/nutrition/pantry");
 }

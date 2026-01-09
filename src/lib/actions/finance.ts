@@ -84,8 +84,8 @@ export async function deleteTransaction(id: string): Promise<void> {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath('/finance');
-  revalidatePath('/');
+  revalidatePath('/dashboard/finance');
+  revalidatePath('/dashboard');
 }
 
 export async function addTransaction(transaction: {
@@ -106,8 +106,8 @@ export async function addTransaction(transaction: {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath('/finance');
-  revalidatePath('/');
+  revalidatePath('/dashboard/finance');
+  revalidatePath('/dashboard');
 }
 
 export async function getBudgets(): Promise<Budget[]> {
@@ -196,7 +196,7 @@ export async function createAccount(account: {
   });
 
   if (error) throw new Error(error.message);
-  revalidatePath('/finance');
+  revalidatePath('/dashboard/finance');
 }
 
 export async function getFinanceSummary() {
