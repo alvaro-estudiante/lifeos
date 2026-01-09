@@ -25,14 +25,14 @@ export async function getDailySuggestions(userId: string): Promise<Suggestion[]>
     sleepLog,
     budgets
   ] = await Promise.all([
-    getDailySummary(today),
-    getTasksForDate(today),
-    getHabits(true),
-    getHabitLogsForDate(today),
-    getActiveWorkout(),
-    getWorkoutHistory(1),
-    getSleepLog(today),
-    getBudgets()
+    getDailySummary(today).catch(() => ({ consumed: { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 }, goals: null })),
+    getTasksForDate(today).catch(() => []),
+    getHabits(true).catch(() => []),
+    getHabitLogsForDate(today).catch(() => []),
+    getActiveWorkout().catch(() => null),
+    getWorkoutHistory(1).catch(() => []),
+    getSleepLog(today).catch(() => null),
+    getBudgets().catch(() => [])
   ]);
 
   const suggestions: Suggestion[] = [];
