@@ -1,116 +1,147 @@
 import { getWorkoutHistory } from "@/lib/actions/workouts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Dumbbell, History, TrendingUp, Calendar, ArrowRight } from "lucide-react";
-import { format } from "date-fns";
+import { Dumbbell, History, TrendingUp, Calendar, ChevronRight, Play, ListChecks, BarChart3 } from "lucide-react";
+import { format, formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 
 export default async function FitnessDashboardPage() {
   const history = await getWorkoutHistory(5);
   const lastWorkout = history[0];
 
-  const weeklyVolume = history.reduce((acc, w) => {
-    // Simple logic: if workout is from last 7 days (not precise week)
+  const weeklyWorkouts = history.filter(w => {
     const workoutDate = new Date(w.workout_date);
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    if (workoutDate > oneWeekAgo) {
-      return acc + (w.total_volume || 0);
-    }
-    return acc;
-  }, 0);
+    return workoutDate > oneWeekAgo;
+  });
+
+  const weeklyVolume = weeklyWorkouts.reduce((acc, w) => acc + (w.total_volume || 0), 0);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Fitness</h1>
-        <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-          <Link href="/dashboard/fitness/workout">
-            <Dumbbell className="mr-2 h-5 w-5" /> Entrenar
-          </Link>
-        </Button>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Último Entreno</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {lastWorkout ? format(new Date(lastWorkout.workout_date), "dd MMM", { locale: es }) : "-"}
+    <div className="space-y-5">
+      {/* Start Workout CTA */}
+      <Card className="bg-gradient-to-br from-blue-500 to-blue-600 border-0 text-white overflow-hidden">
+        <CardContent className="p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold">¿Listo para entrenar?</h2>
+              <p className="text-blue-100 text-sm mt-0.5">
+                {lastWorkout 
+                  ? `Último entreno ${formatDistanceToNow(new Date(lastWorkout.workout_date), { locale: es, addSuffix: true })}`
+                  : "Comienza tu primer entrenamiento"
+                }
+              </p>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {lastWorkout?.name || "Sin registros"}
-            </p>
+            <Button asChild size="lg" variant="secondary" className="h-12 px-5 font-semibold shadow-lg">
+              <Link href="/dashboard/fitness/workout">
+                <Play className="mr-2 h-5 w-5" /> Entrenar
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-blue-500/10">
+                <Calendar className="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{weeklyWorkouts.length}</p>
+                <p className="text-xs text-muted-foreground">Esta semana</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
         
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Volumen Semanal</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{weeklyVolume.toLocaleString()} kg</div>
-            <p className="text-xs text-muted-foreground">
-              Últimos 7 días
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rutinas</CardTitle>
-            <Dumbbell className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <Button asChild variant="link" className="px-0">
-              <Link href="/dashboard/fitness/routines">
-                Ver Mis Rutinas <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Historial</CardTitle>
-            <History className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <Button asChild variant="link" className="px-0">
-              <Link href="/dashboard/fitness/history">
-                Ver Historial <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </Button>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-emerald-500/10">
+                <TrendingUp className="h-5 w-5 text-emerald-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{(weeklyVolume / 1000).toFixed(1)}k</p>
+                <p className="text-xs text-muted-foreground">kg semanal</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
+      {/* Quick Actions */}
+      <div className="grid grid-cols-3 gap-2">
+        <Link href="/dashboard/fitness/routines">
+          <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
+            <CardContent className="p-4 text-center">
+              <ListChecks className="h-6 w-6 mx-auto text-purple-500 mb-2" />
+              <p className="text-xs font-medium">Rutinas</p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/fitness/exercises">
+          <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
+            <CardContent className="p-4 text-center">
+              <Dumbbell className="h-6 w-6 mx-auto text-orange-500 mb-2" />
+              <p className="text-xs font-medium">Ejercicios</p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/fitness/progress">
+          <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
+            <CardContent className="p-4 text-center">
+              <BarChart3 className="h-6 w-6 mx-auto text-cyan-500 mb-2" />
+              <p className="text-xs font-medium">Progreso</p>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
+
+      {/* Recent Activity */}
       <div>
-        <h2 className="text-xl font-bold tracking-tight mb-4">Actividad Reciente</h2>
-        <div className="space-y-4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold">Actividad Reciente</h2>
+          <Link href="/dashboard/fitness/history" className="text-xs text-primary flex items-center">
+            Ver todo <ChevronRight className="h-3 w-3" />
+          </Link>
+        </div>
+        
+        <div className="space-y-2">
           {history.length > 0 ? (
-            history.map((workout) => (
+            history.slice(0, 3).map((workout) => (
               <Link key={workout.id} href={`/dashboard/fitness/workout/${workout.id}`}>
-                <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                  <div>
-                    <div className="font-semibold">{workout.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {format(new Date(workout.workout_date), "PPP", { locale: es })} • {workout.duration_minutes} min
+                <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
+                  <CardContent className="p-3 flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-blue-500/10 flex-shrink-0">
+                      <Dumbbell className="h-5 w-5 text-blue-500" />
                     </div>
-                  </div>
-                  <div className="font-medium">
-                    {workout.total_volume} kg
-                  </div>
-                </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{workout.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {format(new Date(workout.workout_date), "d MMM", { locale: es })} • {workout.duration_minutes || 0} min
+                      </p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="font-bold text-sm">{(workout.total_volume / 1000).toFixed(1)}k</p>
+                      <p className="text-[10px] text-muted-foreground">kg</p>
+                    </div>
+                  </CardContent>
+                </Card>
               </Link>
             ))
           ) : (
-            <div className="text-muted-foreground text-sm">No hay actividad reciente.</div>
+            <Card>
+              <CardContent className="p-8 text-center">
+                <Dumbbell className="h-10 w-10 mx-auto text-muted-foreground/30 mb-3" />
+                <p className="text-sm text-muted-foreground">Sin entrenamientos aún</p>
+                <p className="text-xs text-muted-foreground mt-1">¡Empieza hoy!</p>
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>

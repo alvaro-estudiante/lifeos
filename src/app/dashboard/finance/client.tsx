@@ -16,8 +16,8 @@ export function ClientTransactionForm({ accounts, categories }: ClientTransactio
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>
-        <Plus className="mr-2 h-4 w-4" /> Nueva Transacción
+      <Button onClick={() => setOpen(true)} className="w-full h-11 font-semibold">
+        <Plus className="mr-2 h-5 w-5" /> Nueva Transacción
       </Button>
       <TransactionForm 
         open={open} 
