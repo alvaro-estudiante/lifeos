@@ -55,7 +55,7 @@ export function FitnessSummary({ lastWorkout, stats }: FitnessSummaryProps) {
         </div>
 
         <Button asChild className="w-full mt-auto">
-          <Link href="/fitness/workout">
+          <Link href="/dashboard/fitness/workout">
             Entrenar ahora <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>

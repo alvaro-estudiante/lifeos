@@ -85,7 +85,7 @@ export default async function FinancePage() {
               <CardDescription>Movimientos recientes</CardDescription>
             </div>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/finance/transactions">
+              <Link href="/dashboard/finance/transactions">
                 Ver todo <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>

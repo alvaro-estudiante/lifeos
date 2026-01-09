@@ -46,7 +46,7 @@ export async function getDailySuggestions(userId: string): Promise<Suggestion[]>
       priority: 'high',
       title: 'Déficit calórico alto',
       description: `Te faltan ${Math.round(caloriesLeft)} kcal para tu objetivo.`,
-      action: { label: 'Registrar cena', href: '/nutrition/meals' }
+      action: { label: 'Registrar cena', href: '/dashboard/nutrition/meals' }
     });
   }
 
@@ -63,7 +63,7 @@ export async function getDailySuggestions(userId: string): Promise<Suggestion[]>
       priority: 'high',
       title: '¡A moverse!',
       description: `Hace ${daysSinceWorkout} días que no registras un entreno.`,
-      action: { label: 'Empezar rutina', href: '/fitness/routines' }
+      action: { label: 'Empezar rutina', href: '/dashboard/fitness/routines' }
     });
   } else if (activeWorkout) {
     suggestions.push({
@@ -72,7 +72,7 @@ export async function getDailySuggestions(userId: string): Promise<Suggestion[]>
       priority: 'high',
       title: 'Entrenamiento en curso',
       description: `Tienes un entrenamiento activo: ${activeWorkout.name || 'Sin nombre'}`,
-      action: { label: 'Continuar', href: '/fitness/workout' }
+      action: { label: 'Continuar', href: '/dashboard/fitness/workout' }
     });
   }
 
@@ -85,7 +85,7 @@ export async function getDailySuggestions(userId: string): Promise<Suggestion[]>
       priority: pendingTasks.some(t => t.priority === 'urgent' || t.priority === 'high') ? 'high' : 'medium',
       title: `${pendingTasks.length} tareas pendientes`,
       description: `Tienes ${pendingTasks.length} tareas para hoy.`,
-      action: { label: 'Ver tareas', href: '/tasks' }
+      action: { label: 'Ver tareas', href: '/dashboard/tasks' }
     });
   }
 
@@ -102,7 +102,7 @@ export async function getDailySuggestions(userId: string): Promise<Suggestion[]>
       priority: 'medium',
       title: 'Hábito pendiente',
       description: `No olvides: ${habit.name}`,
-      action: { label: 'Registrar', href: '/habits' }
+      action: { label: 'Registrar', href: '/dashboard/habits' }
     });
   }
 
@@ -114,7 +114,7 @@ export async function getDailySuggestions(userId: string): Promise<Suggestion[]>
       priority: 'medium',
       title: 'Registro de sueño',
       description: '¿Qué tal dormiste anoche?',
-      action: { label: 'Registrar', href: '/tasks' } // Asumiendo que está en /tasks o dashboard
+      action: { label: 'Registrar', href: '/dashboard/tasks' }
     });
   }
 
@@ -128,7 +128,7 @@ export async function getDailySuggestions(userId: string): Promise<Suggestion[]>
       priority: b.spent > b.amount ? 'high' : 'medium',
       title: b.spent > b.amount ? 'Presupuesto excedido' : 'Presupuesto en riesgo',
       description: `Has gastado ${b.spent}€ de ${b.amount}€ en ${b.category?.name || 'una categoría'}.`,
-      action: { label: 'Ver finanzas', href: '/finance' }
+      action: { label: 'Ver finanzas', href: '/dashboard/finance' }
     });
   }
 

@@ -107,7 +107,7 @@ export function TodayTasks({ tasks }: TodayTasksProps) {
             </Button>
           </form>
           <Button asChild variant="link" className="w-full h-auto p-0 text-muted-foreground">
-            <Link href="/tasks">Ver todas las tareas <ArrowRight className="ml-1 h-3 w-3" /></Link>
+            <Link href="/dashboard/tasks">Ver todas las tareas <ArrowRight className="ml-1 h-3 w-3" /></Link>
           </Button>
         </div>
       </CardContent>

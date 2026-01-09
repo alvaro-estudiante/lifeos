@@ -16,7 +16,7 @@ export default async function NutritionPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Nutrición</h1>
         <Button asChild>
-          <Link href="/nutrition/meals">
+          <Link href="/dashboard/nutrition/meals">
             Ver Comidas <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
@@ -89,7 +89,7 @@ export default async function NutritionPage() {
               </CardHeader>
               <CardContent>
                 <Button asChild className="w-full" variant="secondary">
-                  <Link href="/nutrition/pantry">
+                  <Link href="/dashboard/nutrition/pantry">
                     Ir a Despensa <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -103,7 +103,7 @@ export default async function NutritionPage() {
               </CardHeader>
               <CardContent>
                 <Button asChild className="w-full" variant="outline">
-                  <Link href="/nutrition/goals">
+                  <Link href="/dashboard/nutrition/goals">
                     Configurar Metas
                   </Link>
                 </Button>

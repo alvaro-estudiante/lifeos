@@ -8,7 +8,7 @@ export default function TemplatesPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" asChild>
-          <Link href="/fitness/routines">
+          <Link href="/dashboard/fitness/routines">
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>

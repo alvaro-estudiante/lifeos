@@ -80,7 +80,7 @@ export function NutritionSummary({ summary, meals }: NutritionSummaryProps) {
         </div>
 
         <Button asChild variant="link" className="mt-4 w-full h-auto p-0 text-muted-foreground">
-          <Link href="/nutrition/meals">Ver comidas <ArrowRight className="ml-1 h-3 w-3" /></Link>
+          <Link href="/dashboard/nutrition/meals">Ver comidas <ArrowRight className="ml-1 h-3 w-3" /></Link>
         </Button>
       </CardContent>
     </Card>

@@ -26,7 +26,7 @@ export default async function FitnessDashboardPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Fitness</h1>
         <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-          <Link href="/fitness/workout">
+          <Link href="/dashboard/fitness/workout">
             <Dumbbell className="mr-2 h-5 w-5" /> Entrenar
           </Link>
         </Button>
@@ -68,7 +68,7 @@ export default async function FitnessDashboardPage() {
           </CardHeader>
           <CardContent>
             <Button asChild variant="link" className="px-0">
-              <Link href="/fitness/routines">
+              <Link href="/dashboard/fitness/routines">
                 Ver Mis Rutinas <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
@@ -82,7 +82,7 @@ export default async function FitnessDashboardPage() {
           </CardHeader>
           <CardContent>
             <Button asChild variant="link" className="px-0">
-              <Link href="/fitness/history">
+              <Link href="/dashboard/fitness/history">
                 Ver Historial <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
@@ -95,7 +95,7 @@ export default async function FitnessDashboardPage() {
         <div className="space-y-4">
           {history.length > 0 ? (
             history.map((workout) => (
-              <Link key={workout.id} href={`/fitness/workout/${workout.id}`}>
+              <Link key={workout.id} href={`/dashboard/fitness/workout/${workout.id}`}>
                 <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                   <div>
                     <div className="font-semibold">{workout.name}</div>

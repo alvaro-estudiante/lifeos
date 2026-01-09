@@ -13,12 +13,12 @@ export default async function RoutinesPage() {
         <h1 className="text-3xl font-bold tracking-tight">Mis Rutinas</h1>
         <div className="flex gap-2">
           <Button asChild variant="outline">
-            <Link href="/fitness/routines/templates">
+            <Link href="/dashboard/fitness/routines/templates">
               Explorar Plantillas
             </Link>
           </Button>
           <Button asChild>
-            <Link href="/fitness/routines/new">
+            <Link href="/dashboard/fitness/routines/new">
               <Plus className="mr-2 h-4 w-4" /> Crear Rutina
             </Link>
           </Button>
