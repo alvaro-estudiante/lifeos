@@ -8,17 +8,17 @@ export function BackButton() {
   const router = useRouter();
   const pathname = usePathname();
   
-  // No mostrar en dashboard principal
-  if (pathname === "/") return null;
+  // No mostrar en dashboard principal ni en páginas raíz de secciones principales
+  const hideOnPaths = ["/", "/dashboard"];
+  if (hideOnPaths.includes(pathname)) return null;
   
   return (
     <motion.button
       whileTap={{ scale: 0.9 }}
       onClick={() => router.back()}
-      className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors pr-2"
+      className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-muted transition-colors -ml-2"
     >
       <ChevronLeft className="h-5 w-5" />
-      <span className="text-sm hidden sm:inline">Atrás</span>
     </motion.button>
   );
 }
