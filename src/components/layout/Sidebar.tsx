@@ -24,54 +24,49 @@ import {
 } from "@/components/ui/collapsible";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   {
-    href: "/nutrition",
+    href: "/dashboard/nutrition",
     label: "Nutrición",
     icon: Utensils,
     subItems: [
-      { href: "/nutrition", label: "Dashboard" },
-      { href: "/nutrition/pantry", label: "Despensa" },
-      { href: "/nutrition/meals", label: "Comidas" },
-      { href: "/nutrition/equipment", label: "Equipamiento" },
-      { href: "/nutrition/recipes", label: "Recetas" },
+      { href: "/dashboard/nutrition", label: "Dashboard" },
+      { href: "/dashboard/nutrition/pantry", label: "Despensa" },
+      { href: "/dashboard/nutrition/meals", label: "Comidas" },
+      { href: "/dashboard/nutrition/goals", label: "Objetivos" },
     ],
   },
   {
-    href: "/fitness",
+    href: "/dashboard/fitness",
     label: "Fitness",
     icon: Dumbbell,
     subItems: [
-      { href: "/fitness", label: "Dashboard" },
-      { href: "/fitness/workout", label: "Entrenar" },
-      { href: "/fitness/routines", label: "Rutinas" },
-      { href: "/fitness/exercises", label: "Ejercicios" },
-      { href: "/fitness/history", label: "Historial" },
-      { href: "/fitness/progress", label: "Progreso" },
+      { href: "/dashboard/fitness", label: "Dashboard" },
+      { href: "/dashboard/fitness/workout", label: "Entrenar" },
+      { href: "/dashboard/fitness/routines", label: "Rutinas" },
+      { href: "/dashboard/fitness/exercises", label: "Ejercicios" },
+      { href: "/dashboard/fitness/history", label: "Historial" },
     ],
   },
   {
-    href: "/tasks",
+    href: "/dashboard/tasks",
     label: "Productividad",
     icon: CheckSquare,
     subItems: [
-      { href: "/tasks/today", label: "Vista Hoy" },
-      { href: "/tasks", label: "Tareas" },
-      { href: "/habits", label: "Hábitos" },
+      { href: "/dashboard/tasks/today", label: "Vista Hoy" },
+      { href: "/dashboard/tasks", label: "Tareas" },
+      { href: "/dashboard/habits", label: "Hábitos" },
     ],
   },
   {
-    href: "/finance",
+    href: "/dashboard/finance",
     label: "Finanzas",
     icon: Wallet,
     subItems: [
-      { href: "/finance", label: "Dashboard" },
-      { href: "/finance/transactions", label: "Transacciones" },
-      { href: "/finance/budgets", label: "Presupuestos" },
+      { href: "/dashboard/finance", label: "Dashboard" },
     ],
   },
-  { href: "/notes", label: "Notas", icon: StickyNote },
-  { href: "/settings", label: "Ajustes", icon: Settings },
+  { href: "/dashboard/settings", label: "Ajustes", icon: Settings },
 ];
 
 export function Sidebar() {
