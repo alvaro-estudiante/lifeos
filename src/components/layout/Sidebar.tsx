@@ -8,12 +8,13 @@ import {
   Utensils,
   Dumbbell,
   CheckSquare,
-  StickyNote,
   Wallet,
   Settings,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
+  FileText,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -32,7 +33,9 @@ const navItems = [
     subItems: [
       { href: "/dashboard/nutrition", label: "Dashboard" },
       { href: "/dashboard/nutrition/pantry", label: "Despensa" },
+      { href: "/dashboard/nutrition/recipes", label: "Recetas" },
       { href: "/dashboard/nutrition/meals", label: "Comidas" },
+      { href: "/dashboard/nutrition/history", label: "Historial" },
       { href: "/dashboard/nutrition/goals", label: "Objetivos" },
     ],
   },
@@ -45,6 +48,7 @@ const navItems = [
       { href: "/dashboard/fitness/workout", label: "Entrenar" },
       { href: "/dashboard/fitness/routines", label: "Rutinas" },
       { href: "/dashboard/fitness/exercises", label: "Ejercicios" },
+      { href: "/dashboard/fitness/progress", label: "Progreso" },
       { href: "/dashboard/fitness/history", label: "Historial" },
     ],
   },
@@ -55,7 +59,9 @@ const navItems = [
     subItems: [
       { href: "/dashboard/tasks/today", label: "Vista Hoy" },
       { href: "/dashboard/tasks", label: "Tareas" },
+      { href: "/dashboard/tasks/calendar", label: "Calendario" },
       { href: "/dashboard/habits", label: "Hábitos" },
+      { href: "/dashboard/habits/stats", label: "Estadísticas" },
     ],
   },
   {
@@ -66,6 +72,8 @@ const navItems = [
       { href: "/dashboard/finance", label: "Dashboard" },
     ],
   },
+  { href: "/dashboard/reports", label: "Reportes", icon: FileText },
+  { href: "/dashboard/profile", label: "Perfil", icon: User },
   { href: "/dashboard/settings", label: "Ajustes", icon: Settings },
 ];
 
