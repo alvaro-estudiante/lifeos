@@ -5,12 +5,13 @@ import { WorkoutTimer } from "@/components/fitness/WorkoutTimer";
 import { WorkoutExerciseInput } from "@/components/fitness/WorkoutExerciseInput";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Plus, CheckSquare } from "lucide-react";
+import { Plus, CheckSquare, Dumbbell } from "lucide-react";
 import { ExerciseSelector } from "@/components/fitness/ExerciseSelector";
 import { WorkoutSummary } from "@/components/fitness/WorkoutSummary";
 import { useState } from "react";
 import { Exercise } from "@/lib/actions/exercises";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface WorkoutPageClientProps {
   workout: Workout;
@@ -30,32 +31,57 @@ export function WorkoutPageClient({ workout }: WorkoutPageClientProps) {
     }
   };
 
-  return (
-    <div className="space-y-6 pb-20">
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Entrenando</h1>
-            <p className="text-muted-foreground">{workout.name}</p>
-          </div>
-          <WorkoutTimer
-            startTime={workout.start_time || new Date().toTimeString().split(' ')[0]}
-            workoutDate={workout.workout_date || new Date().toISOString()}
-          />
-        </div>
+  const totalSets = workout.exercises?.reduce((acc, e) => acc + (e.sets?.length || 0), 0) || 0;
 
-        <Accordion type="multiple" defaultValue={workout.exercises?.map(e => e.id)} className="w-full space-y-4">
-          {workout.exercises?.map((exercise) => (
-            <AccordionItem key={exercise.id} value={exercise.id} className="border rounded-lg bg-card px-4">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center justify-between w-full pr-4">
-                  <span className="font-semibold text-lg">{exercise.exercise_name}</span>
-                  <span className="text-sm text-muted-foreground font-normal">
-                    {exercise.sets?.length || 0} series
-                  </span>
+  return (
+    <div className="space-y-4 sm:space-y-6 pb-24 sm:pb-20">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-3xl font-bold tracking-tight truncate">
+            {workout.name || "Entrenando"}
+          </h1>
+          <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+            <span>{workout.exercises?.length || 0} ejercicios</span>
+            <span>•</span>
+            <span>{totalSets} series</span>
+          </div>
+        </div>
+        <WorkoutTimer
+          startTime={workout.start_time || new Date().toTimeString().split(' ')[0]}
+          workoutDate={workout.workout_date || new Date().toISOString()}
+        />
+      </div>
+
+      {/* Exercises */}
+      {workout.exercises && workout.exercises.length > 0 ? (
+        <Accordion 
+          type="multiple" 
+          defaultValue={workout.exercises?.map(e => e.id)} 
+          className="w-full space-y-3"
+        >
+          {workout.exercises.map((exercise, index) => (
+            <AccordionItem 
+              key={exercise.id} 
+              value={exercise.id} 
+              className="border rounded-xl bg-card overflow-hidden"
+            >
+              <AccordionTrigger className="hover:no-underline px-4 py-3">
+                <div className="flex items-center gap-3 w-full pr-2">
+                  <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary/10 text-primary font-bold text-sm flex-shrink-0">
+                    {index + 1}
+                  </div>
+                  <div className="flex-1 text-left min-w-0">
+                    <span className="font-semibold text-sm sm:text-base block truncate">
+                      {exercise.exercise_name}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {exercise.sets?.length || 0} series completadas
+                    </span>
+                  </div>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="pt-2 pb-4">
+              <AccordionContent className="px-4 pb-4">
                 <WorkoutExerciseInput 
                   workoutExerciseId={exercise.id} 
                   sets={exercise.sets || []} 
@@ -64,17 +90,41 @@ export function WorkoutPageClient({ workout }: WorkoutPageClientProps) {
             </AccordionItem>
           ))}
         </Accordion>
-
-        <div className="flex justify-center py-4">
-          <Button variant="outline" onClick={() => setIsSelectorOpen(true)}>
+      ) : (
+        <div className="text-center py-12 border-2 border-dashed rounded-xl">
+          <Dumbbell className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
+          <p className="text-muted-foreground mb-4">Añade ejercicios para empezar</p>
+          <Button onClick={() => setIsSelectorOpen(true)}>
             <Plus className="mr-2 h-4 w-4" /> Añadir Ejercicio
           </Button>
         </div>
-      </div>
+      )}
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t md:static md:bg-transparent md:border-0 md:p-0">
-        <Button className="w-full md:w-auto md:ml-auto block" size="lg" onClick={() => setIsSummaryOpen(true)}>
-          <CheckSquare className="mr-2 h-4 w-4 inline" /> Finalizar Entrenamiento
+      {/* Add Exercise Button */}
+      {workout.exercises && workout.exercises.length > 0 && (
+        <div className="flex justify-center">
+          <Button 
+            variant="outline" 
+            onClick={() => setIsSelectorOpen(true)}
+            className="w-full sm:w-auto"
+          >
+            <Plus className="mr-2 h-4 w-4" /> Añadir Ejercicio
+          </Button>
+        </div>
+      )}
+
+      {/* Finish Button - Fixed on mobile */}
+      <div className={cn(
+        "fixed bottom-16 left-0 right-0 p-4 bg-background/95 backdrop-blur border-t z-40",
+        "sm:static sm:bg-transparent sm:border-0 sm:p-0 sm:backdrop-blur-none"
+      )}>
+        <Button 
+          className="w-full sm:w-auto sm:ml-auto sm:block" 
+          size="lg" 
+          onClick={() => setIsSummaryOpen(true)}
+          disabled={!workout.exercises?.length}
+        >
+          <CheckSquare className="mr-2 h-4 w-4" /> Finalizar Entrenamiento
         </Button>
       </div>
 

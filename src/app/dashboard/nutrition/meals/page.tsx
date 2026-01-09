@@ -1,12 +1,9 @@
 import { getMealsByDate, MealType, copyMealsFromDate } from "@/lib/actions/meals";
 import { MealSection } from "@/components/nutrition/MealSection";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, ChevronLeft, ChevronRight, Copy } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, Copy, Flame } from "lucide-react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 
@@ -32,6 +29,8 @@ export default async function MealsPage({ searchParams }: MealsPageProps) {
   const nextDay = new Date(displayDate);
   nextDay.setDate(nextDay.getDate() + 1);
 
+  const isToday = date === new Date().toISOString().split("T")[0];
+
   async function handleCopyYesterday() {
     "use server";
     const prevDay = new Date(displayDate);
@@ -41,77 +40,64 @@ export default async function MealsPage({ searchParams }: MealsPageProps) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-3xl font-bold tracking-tight">Comidas</h1>
-            <form action={handleCopyYesterday}>
-              <Button variant="outline" size="sm" type="submit">
-                <Copy className="mr-2 h-4 w-4" />
-                Repetir ayer
-              </Button>
-            </form>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" asChild>
-              <Link href={`/nutrition/meals?date=${prevDay.toISOString().split("T")[0]}`}>
-                <ChevronLeft className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-[240px] justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {format(displayDate, "PPP", { locale: es })}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
-                <Calendar
-                  mode="single"
-                  selected={displayDate}
-                  initialFocus
-                  // We need to handle navigation via URL params, so we might need a client component wrapper for full interactivity
-                  // For now, this is a simple display or basic picker that doesn't fully integrate with server component reload without client logic.
-                  // Ideally, this should be a client component for date selection.
-                />
-              </PopoverContent>
-            </Popover>
-            <Button variant="outline" size="icon" asChild>
-              <Link href={`/nutrition/meals?date=${nextDay.toISOString().split("T")[0]}`}>
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
+    <div className="space-y-4 sm:space-y-6">
+      {/* Date Navigation - Mobile optimized */}
+      <div className="flex items-center justify-between gap-2">
+        <Button variant="ghost" size="icon" asChild className="h-9 w-9">
+          <Link href={`/dashboard/nutrition/meals?date=${prevDay.toISOString().split("T")[0]}`}>
+            <ChevronLeft className="h-5 w-5" />
+          </Link>
+        </Button>
+        
+        <div className="text-center flex-1">
+          <h1 className="text-lg sm:text-xl font-bold capitalize">
+            {isToday ? "Hoy" : format(displayDate, "EEEE", { locale: es })}
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            {format(displayDate, "d 'de' MMMM", { locale: es })}
+          </p>
         </div>
+        
+        <Button variant="ghost" size="icon" asChild className="h-9 w-9">
+          <Link href={`/dashboard/nutrition/meals?date=${nextDay.toISOString().split("T")[0]}`}>
+            <ChevronRight className="h-5 w-5" />
+          </Link>
+        </Button>
+      </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted/20 rounded-lg border">
-          <div>
-            <div className="text-sm text-muted-foreground">Calorías</div>
-            <div className="text-2xl font-bold">{Math.round(totalCalories)}</div>
+      {/* Macros Summary - Compact for mobile */}
+      <div className="grid grid-cols-4 gap-2 p-3 bg-muted/30 rounded-xl">
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-1">
+            <Flame className="h-3 w-3 text-orange-500" />
+            <span className="text-lg sm:text-xl font-bold">{Math.round(totalCalories)}</span>
           </div>
-          <div>
-            <div className="text-sm text-muted-foreground">Proteína</div>
-            <div className="text-2xl font-bold text-red-500">{Math.round(totalProtein)}g</div>
-          </div>
-          <div>
-            <div className="text-sm text-muted-foreground">Carbohidratos</div>
-            <div className="text-2xl font-bold text-amber-500">{Math.round(totalCarbs)}g</div>
-          </div>
-          <div>
-            <div className="text-sm text-muted-foreground">Grasa</div>
-            <div className="text-2xl font-bold text-emerald-500">{Math.round(totalFat)}g</div>
-          </div>
+          <div className="text-[10px] sm:text-xs text-muted-foreground">kcal</div>
+        </div>
+        <div className="text-center">
+          <div className="text-lg sm:text-xl font-bold text-red-500">{Math.round(totalProtein)}g</div>
+          <div className="text-[10px] sm:text-xs text-muted-foreground">Proteína</div>
+        </div>
+        <div className="text-center">
+          <div className="text-lg sm:text-xl font-bold text-amber-500">{Math.round(totalCarbs)}g</div>
+          <div className="text-[10px] sm:text-xs text-muted-foreground">Carbos</div>
+        </div>
+        <div className="text-center">
+          <div className="text-lg sm:text-xl font-bold text-emerald-500">{Math.round(totalFat)}g</div>
+          <div className="text-[10px] sm:text-xs text-muted-foreground">Grasa</div>
         </div>
       </div>
 
-      <div className="grid gap-6">
+      {/* Quick Action */}
+      <form action={handleCopyYesterday}>
+        <Button variant="outline" size="sm" type="submit" className="w-full sm:w-auto">
+          <Copy className="mr-2 h-4 w-4" />
+          Copiar comidas de ayer
+        </Button>
+      </form>
+
+      {/* Meal Sections */}
+      <div className="space-y-4">
         <MealSection 
           title="Desayuno" 
           type="breakfast" 
