@@ -1,6 +1,6 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Utensils, CheckSquare, Dumbbell, Moon, Flame } from "lucide-react";
+"use client";
+
+import { Flame, CheckCircle2, Dumbbell, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface QuickStatsProps {
@@ -22,42 +22,43 @@ interface QuickStatsProps {
 }
 
 export function QuickStats({ nutrition, tasks, fitness, sleep }: QuickStatsProps) {
-  const nutritionProgress = Math.min(100, (nutrition.consumed / nutrition.target) * 100);
-  const tasksProgress = tasks.total > 0 ? (tasks.completed / tasks.total) * 100 : 0;
+  const nutritionProgress = Math.min(100, Math.round((nutrition.consumed / nutrition.target) * 100));
+  const tasksProgress = tasks.total > 0 ? Math.round((tasks.completed / tasks.total) * 100) : 0;
 
   const stats = [
     {
       label: "Calorías",
       value: Math.round(nutrition.consumed),
-      subtext: `/ ${nutrition.target}`,
-      icon: Utensils,
-      color: "text-emerald-500",
-      bgColor: "bg-emerald-500/10",
+      max: nutrition.target,
+      unit: "kcal",
       progress: nutritionProgress,
-      progressColor: "bg-emerald-500",
+      icon: Flame,
+      color: "text-orange-500",
+      progressColor: "bg-orange-500",
+      bgColor: "bg-orange-500/10",
     },
     {
       label: "Tareas",
       value: tasks.completed,
-      subtext: `/ ${tasks.total}`,
-      icon: CheckSquare,
-      color: "text-amber-500",
-      bgColor: "bg-amber-500/10",
+      max: tasks.total,
       progress: tasksProgress,
-      progressColor: "bg-amber-500",
+      icon: CheckCircle2,
+      color: "text-emerald-500",
+      progressColor: "bg-emerald-500",
+      bgColor: "bg-emerald-500/10",
     },
     {
       label: "Racha",
       value: fitness.streak,
-      subtext: "días",
-      icon: Flame,
-      color: "text-orange-500",
-      bgColor: "bg-orange-500/10",
+      unit: "días",
+      icon: Dumbbell,
+      color: "text-blue-500",
+      bgColor: "bg-blue-500/10",
     },
     {
       label: "Sueño",
-      value: sleep?.duration || "-",
-      subtext: "horas",
+      value: sleep?.duration || 0,
+      unit: "h",
       icon: Moon,
       color: "text-indigo-500",
       bgColor: "bg-indigo-500/10",
@@ -65,34 +66,41 @@ export function QuickStats({ nutrition, tasks, fitness, sleep }: QuickStatsProps
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+    <div className="grid grid-cols-4 gap-2">
       {stats.map((stat) => (
-        <Card key={stat.label} className="overflow-hidden">
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-start justify-between mb-2">
-              <div className={cn("p-1.5 sm:p-2 rounded-lg", stat.bgColor)}>
-                <stat.icon className={cn("h-4 w-4 sm:h-5 sm:w-5", stat.color)} />
-              </div>
+        <div 
+          key={stat.label} 
+          className="bg-card rounded-2xl p-3 border border-border/50 shadow-sm"
+        >
+          {/* Icon */}
+          <div className={cn("w-8 h-8 rounded-xl flex items-center justify-center mb-2", stat.bgColor)}>
+            <stat.icon className={cn("h-4 w-4", stat.color)} />
+          </div>
+          
+          {/* Value */}
+          <div className="space-y-0.5">
+            <div className="flex items-baseline gap-0.5">
+              <span className="text-lg font-bold leading-none">{stat.value}</span>
+              {stat.max !== undefined && (
+                <span className="text-[10px] text-muted-foreground">/{stat.max}</span>
+              )}
+              {stat.unit && !stat.max && (
+                <span className="text-[10px] text-muted-foreground">{stat.unit}</span>
+              )}
             </div>
-            <div className="space-y-0.5">
-              <p className="text-xs text-muted-foreground">{stat.label}</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-xl sm:text-2xl font-bold">{stat.value}</span>
-                <span className="text-xs text-muted-foreground">{stat.subtext}</span>
-              </div>
+            <p className="text-[10px] text-muted-foreground leading-none">{stat.label}</p>
+          </div>
+
+          {/* Progress bar */}
+          {stat.progress !== undefined && (
+            <div className="mt-2 h-1 bg-muted rounded-full overflow-hidden">
+              <div 
+                className={cn("h-full rounded-full transition-all duration-500", stat.progressColor)}
+                style={{ width: `${stat.progress}%` }}
+              />
             </div>
-            {stat.progress !== undefined && (
-              <div className="mt-2">
-                <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                  <div 
-                    className={cn("h-full rounded-full transition-all", stat.progressColor)}
-                    style={{ width: `${stat.progress}%` }}
-                  />
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+          )}
+        </div>
       ))}
     </div>
   );

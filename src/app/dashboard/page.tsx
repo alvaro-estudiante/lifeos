@@ -24,11 +24,11 @@ export default async function DashboardPage() {
   ]);
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-5">
+      {/* Welcome - Always visible */}
       <WelcomeHeader userName={data.user.full_name || "Usuario"} />
       
-      <SmartSuggestions suggestions={suggestions} />
-
+      {/* Quick Stats - 2x2 grid on mobile */}
       <QuickStats
         nutrition={{
           consumed: data.nutrition.summary.consumed.calories, 
@@ -47,10 +47,13 @@ export default async function DashboardPage() {
         }}
       />
 
-      {/* Mobile: Stack vertically, Desktop: Grid */}
-      <div className="space-y-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0">
-        {/* Main Content - Tasks */}
-        <div className="lg:col-span-2">
+      {/* Suggestions - Horizontal scroll */}
+      <SmartSuggestions suggestions={suggestions} />
+
+      {/* Main content - Vertical on mobile */}
+      <div className="space-y-5 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0">
+        {/* Tasks & Habits Section */}
+        <div className="space-y-5 lg:col-span-2 lg:space-y-6">
           <DayOrganizer tasks={data.tasks.today} />
         </div>
 
@@ -60,20 +63,16 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Summary Cards - Always horizontal scroll on mobile */}
-      <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 sm:overflow-visible">
-        <div className="min-w-[280px] sm:min-w-0">
-          <NutritionSummary
-            summary={data.nutrition.summary}
-            meals={data.nutrition.meals}
-          />
-        </div>
-        <div className="min-w-[280px] sm:min-w-0">
-          <FitnessSummary
-            lastWorkout={data.fitness.lastWorkout}
-            stats={data.fitness}
-          />
-        </div>
+      {/* Summary Cards - Side by side on mobile with scroll */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        <NutritionSummary
+          summary={data.nutrition.summary}
+          meals={data.nutrition.meals}
+        />
+        <FitnessSummary
+          lastWorkout={data.fitness.lastWorkout}
+          stats={data.fitness}
+        />
       </div>
     </div>
   );

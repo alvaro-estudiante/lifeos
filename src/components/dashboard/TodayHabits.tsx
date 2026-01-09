@@ -3,7 +3,7 @@
 import { Habit, logHabit } from "@/lib/actions/habits";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Check, Sparkles, ChevronRight } from "lucide-react";
+import { Plus, Check, Target, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
@@ -40,7 +40,6 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
         description: `${habit.name} registrado`
       });
     } catch {
-      // Revert on error
       setLocalHabits(habits);
       toast({ variant: "destructive", title: "Error al registrar" });
     } finally {
@@ -49,91 +48,114 @@ export function TodayHabits({ habits }: TodayHabitsProps) {
   };
 
   const completedCount = localHabits.filter(h => (h.todaysLog?.value || 0) >= h.target_value).length;
+  const totalCount = localHabits.length;
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader className="flex flex-row items-center justify-between pb-2 px-4">
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-purple-500" />
-          <CardTitle className="text-base font-semibold">Hábitos</CardTitle>
-          {habits.length > 0 && (
-            <span className="text-xs text-muted-foreground">
-              {completedCount}/{habits.length}
-            </span>
-          )}
+    <Card>
+      <CardHeader className="pb-3 px-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Target className="h-4 w-4 text-purple-500" />
+            <CardTitle className="text-sm font-semibold">Hábitos</CardTitle>
+            {totalCount > 0 && (
+              <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
+                {completedCount}/{totalCount}
+              </span>
+            )}
+          </div>
+          <Link 
+            href="/dashboard/habits"
+            className="text-xs text-primary flex items-center hover:underline"
+          >
+            Ver todos <ChevronRight className="h-3 w-3" />
+          </Link>
         </div>
-        <Link 
-          href="/dashboard/habits"
-          className="text-xs text-primary flex items-center gap-1 hover:underline"
-        >
-          Ver todos <ChevronRight className="h-3 w-3" />
-        </Link>
-      </CardHeader>
-      <CardContent className="flex-1 px-3 pb-3 space-y-1">
-        {localHabits.slice(0, 5).map((habit) => {
-          const currentValue = habit.todaysLog?.value || 0;
-          const isCompleted = currentValue >= habit.target_value;
-          const progress = Math.min(100, (currentValue / habit.target_value) * 100);
-          
-          return (
+        
+        {/* Progress bar */}
+        {totalCount > 0 && (
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden mt-2">
             <div 
-              key={habit.id} 
-              className={cn(
-                "flex items-center gap-3 p-2.5 rounded-xl transition-all",
-                isCompleted ? "bg-green-50 dark:bg-green-950/30" : "hover:bg-muted/50"
-              )}
-            >
-              <div className="text-lg flex-shrink-0">{habit.icon || "✨"}</div>
-              <div className="flex-1 min-w-0">
-                <div className={cn(
-                  "font-medium text-sm truncate",
-                  isCompleted && "text-green-700 dark:text-green-400"
-                )}>
-                  {habit.name}
-                </div>
-                <div className="flex items-center gap-2 mt-1">
-                  <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                    <div 
-                      className={cn(
-                        "h-full rounded-full transition-all duration-300",
-                        isCompleted ? "bg-green-500" : "bg-purple-500"
-                      )}
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                  <span className="text-[10px] text-muted-foreground flex-shrink-0">
-                    {currentValue}/{habit.target_value}
-                  </span>
-                </div>
-              </div>
+              className="h-full bg-purple-500 rounded-full transition-all duration-500"
+              style={{ width: `${(completedCount / totalCount) * 100}%` }}
+            />
+          </div>
+        )}
+      </CardHeader>
+      
+      <CardContent className="px-3 pb-3">
+        {localHabits.length > 0 ? (
+          <div className="space-y-1">
+            {localHabits.slice(0, 4).map((habit) => {
+              const currentValue = habit.todaysLog?.value || 0;
+              const isCompleted = currentValue >= habit.target_value;
+              const progress = Math.min(100, (currentValue / habit.target_value) * 100);
               
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  "h-8 w-8 rounded-full flex-shrink-0 transition-all",
-                  isCompleted 
-                    ? "text-green-600 bg-green-100 dark:bg-green-900/50 hover:bg-green-200" 
-                    : "hover:bg-purple-100 hover:text-purple-600"
-                )}
-                onClick={() => handleIncrement(habit)}
-                disabled={loadingId === habit.id}
-              >
-                {isCompleted ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Plus className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-          );
-        })}
-        {habits.length === 0 && (
+              return (
+                <div 
+                  key={habit.id} 
+                  className={cn(
+                    "flex items-center gap-2.5 p-2 rounded-xl transition-all",
+                    isCompleted ? "bg-purple-50 dark:bg-purple-950/30" : ""
+                  )}
+                >
+                  {/* Emoji */}
+                  <span className="text-base w-6 text-center flex-shrink-0">
+                    {habit.icon || "✨"}
+                  </span>
+                  
+                  {/* Name & Progress */}
+                  <div className="flex-1 min-w-0">
+                    <p className={cn(
+                      "text-sm font-medium truncate",
+                      isCompleted && "text-purple-700 dark:text-purple-400"
+                    )}>
+                      {habit.name}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className={cn(
+                            "h-full rounded-full transition-all duration-300",
+                            isCompleted ? "bg-purple-500" : "bg-purple-300"
+                          )}
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                      <span className="text-[10px] text-muted-foreground w-8">
+                        {currentValue}/{habit.target_value}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Action Button */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={cn(
+                      "h-7 w-7 rounded-full flex-shrink-0",
+                      isCompleted 
+                        ? "bg-purple-500 text-white hover:bg-purple-600" 
+                        : "bg-muted hover:bg-purple-100"
+                    )}
+                    onClick={() => handleIncrement(habit)}
+                    disabled={loadingId === habit.id}
+                  >
+                    {isCompleted ? (
+                      <Check className="h-3.5 w-3.5" />
+                    ) : (
+                      <Plus className="h-3.5 w-3.5" />
+                    )}
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
           <div className="text-center py-6">
-            <Sparkles className="h-8 w-8 text-muted-foreground/50 mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground">No tienes hábitos activos</p>
+            <Target className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+            <p className="text-xs text-muted-foreground">Sin hábitos activos</p>
             <Link href="/dashboard/habits">
-              <Button variant="link" size="sm" className="mt-2">
+              <Button variant="link" size="sm" className="mt-1 h-auto p-0 text-xs">
                 Crear primer hábito
               </Button>
             </Link>
