@@ -2,7 +2,7 @@
   "name": "LifeOS - Tu Sistema Operativo Personal",
   "short_name": "LifeOS",
   "description": "Organiza tu nutrición, fitness y productividad en un solo lugar",
-  "start_url": "/",
+  "start_url": "/dashboard",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0f172a",
@@ -68,22 +68,22 @@
       "name": "Añadir Comida",
       "short_name": "Comida",
       "description": "Registrar una comida rápidamente",
-      "url": "/nutrition",
-      "icons": [{ "src": "/icons/shortcut-food.png", "sizes": "96x96" }]
+      "url": "/dashboard/nutrition/meals",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Iniciar Entreno",
       "short_name": "Entreno",
       "description": "Comenzar un entrenamiento",
-      "url": "/fitness",
-      "icons": [{ "src": "/icons/shortcut-workout.png", "sizes": "96x96" }]
+      "url": "/dashboard/fitness/workout",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
       "name": "Nueva Tarea",
       "short_name": "Tarea",
       "description": "Crear una tarea rápida",
-      "url": "/tasks",
-      "icons": [{ "src": "/icons/shortcut-task.png", "sizes": "96x96" }]
+      "url": "/dashboard/tasks",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     }
   ],
   
