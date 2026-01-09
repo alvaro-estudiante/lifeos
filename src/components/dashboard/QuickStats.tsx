@@ -30,7 +30,6 @@ export function QuickStats({ nutrition, tasks, fitness, sleep }: QuickStatsProps
       label: "Calorías",
       value: Math.round(nutrition.consumed),
       max: nutrition.target,
-      unit: "kcal",
       progress: nutritionProgress,
       icon: Flame,
       color: "text-orange-500",
@@ -50,7 +49,7 @@ export function QuickStats({ nutrition, tasks, fitness, sleep }: QuickStatsProps
     {
       label: "Racha",
       value: fitness.streak,
-      unit: "días",
+      suffix: "días",
       icon: Dumbbell,
       color: "text-blue-500",
       bgColor: "bg-blue-500/10",
@@ -58,7 +57,7 @@ export function QuickStats({ nutrition, tasks, fitness, sleep }: QuickStatsProps
     {
       label: "Sueño",
       value: sleep?.duration || 0,
-      unit: "h",
+      suffix: "h",
       icon: Moon,
       color: "text-indigo-500",
       bgColor: "bg-indigo-500/10",
@@ -66,34 +65,34 @@ export function QuickStats({ nutrition, tasks, fitness, sleep }: QuickStatsProps
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
       {stats.map((stat) => (
         <div 
           key={stat.label} 
-          className="bg-card rounded-2xl p-3 border border-border/50 shadow-sm"
+          className="bg-card rounded-2xl p-3 sm:p-4 border border-border/50"
         >
-          {/* Icon */}
-          <div className={cn("w-8 h-8 rounded-xl flex items-center justify-center mb-2", stat.bgColor)}>
-            <stat.icon className={cn("h-4 w-4", stat.color)} />
+          {/* Icon & Label Row */}
+          <div className="flex items-center gap-2 mb-2">
+            <div className={cn("w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center", stat.bgColor)}>
+              <stat.icon className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", stat.color)} />
+            </div>
+            <span className="text-[11px] sm:text-xs text-muted-foreground font-medium">{stat.label}</span>
           </div>
           
           {/* Value */}
-          <div className="space-y-0.5">
-            <div className="flex items-baseline gap-0.5">
-              <span className="text-lg font-bold leading-none">{stat.value}</span>
-              {stat.max !== undefined && (
-                <span className="text-[10px] text-muted-foreground">/{stat.max}</span>
-              )}
-              {stat.unit && !stat.max && (
-                <span className="text-[10px] text-muted-foreground">{stat.unit}</span>
-              )}
-            </div>
-            <p className="text-[10px] text-muted-foreground leading-none">{stat.label}</p>
+          <div className="flex items-baseline gap-1">
+            <span className="text-xl sm:text-2xl font-bold">{stat.value}</span>
+            {stat.max !== undefined && (
+              <span className="text-[10px] sm:text-xs text-muted-foreground">/{stat.max}</span>
+            )}
+            {stat.suffix && (
+              <span className="text-[10px] sm:text-xs text-muted-foreground">{stat.suffix}</span>
+            )}
           </div>
 
           {/* Progress bar */}
           {stat.progress !== undefined && (
-            <div className="mt-2 h-1 bg-muted rounded-full overflow-hidden">
+            <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
               <div 
                 className={cn("h-full rounded-full transition-all duration-500", stat.progressColor)}
                 style={{ width: `${stat.progress}%` }}

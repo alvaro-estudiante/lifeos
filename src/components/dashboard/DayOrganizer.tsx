@@ -1,10 +1,9 @@
 "use client";
 
-import { Task, completeTask, deleteTask } from "@/lib/actions/tasks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Task, completeTask } from "@/lib/actions/tasks";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarDays, ChevronRight, Check, Trash2 } from "lucide-react";
+import { Plus, CalendarDays, ChevronRight, Check } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { TaskForm } from "@/components/productivity/TaskForm";
@@ -36,10 +35,10 @@ export function DayOrganizer({ tasks }: DayOrganizerProps) {
     
     try {
       await completeTask(taskId);
-      toast({ title: "✅ Tarea completada" });
+      toast({ title: "✅ Completada" });
     } catch {
       setLocalTasks(tasks);
-      toast({ variant: "destructive", title: "Error al completar" });
+      toast({ variant: "destructive", title: "Error" });
     }
   };
 
@@ -54,30 +53,30 @@ export function DayOrganizer({ tasks }: DayOrganizerProps) {
 
   return (
     <Card>
-      <CardHeader className="pb-3 px-4">
+      <CardHeader className="pb-2 px-4 pt-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CalendarDays className="h-4 w-4 text-amber-500" />
-            <CardTitle className="text-sm font-semibold">Mi Día</CardTitle>
+            <span className="text-sm font-semibold">Mi Día</span>
             {pendingTasks.length > 0 && (
-              <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
-                {pendingTasks.length} pendientes
+              <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
+                {pendingTasks.length}
               </span>
             )}
           </div>
           <Link 
             href="/dashboard/tasks"
-            className="text-xs text-primary flex items-center hover:underline"
+            className="text-[11px] text-primary flex items-center gap-0.5 hover:underline whitespace-nowrap"
           >
-            Ver todas <ChevronRight className="h-3 w-3" />
+            Ver <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
       </CardHeader>
       
-      <CardContent className="px-3 pb-3">
+      <CardContent className="px-3 pb-3 pt-1">
         {/* Pending Tasks */}
         {pendingTasks.length > 0 ? (
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <AnimatePresence mode="popLayout">
               {pendingTasks.slice(0, 5).map((task) => (
                 <motion.div
@@ -86,7 +85,7 @@ export function DayOrganizer({ tasks }: DayOrganizerProps) {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
-                  className="flex items-center gap-3 p-2.5 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors group"
+                  className="flex items-center gap-2 p-2 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors group"
                 >
                   {/* Checkbox */}
                   <button
@@ -113,17 +112,17 @@ export function DayOrganizer({ tasks }: DayOrganizerProps) {
             {pendingTasks.length > 5 && (
               <Link 
                 href="/dashboard/tasks"
-                className="block text-center text-xs text-muted-foreground py-2 hover:text-primary"
+                className="block text-center text-[11px] text-muted-foreground py-1 hover:text-primary"
               >
                 +{pendingTasks.length - 5} más
               </Link>
             )}
           </div>
         ) : (
-          <div className="text-center py-8">
-            <div className="text-3xl mb-2">🎉</div>
+          <div className="text-center py-6">
+            <div className="text-2xl mb-2">🎉</div>
             <p className="text-sm font-medium">¡Todo listo!</p>
-            <p className="text-xs text-muted-foreground mt-1">No tienes tareas pendientes</p>
+            <p className="text-xs text-muted-foreground mt-0.5">No tienes tareas pendientes</p>
           </div>
         )}
 
@@ -134,19 +133,19 @@ export function DayOrganizer({ tasks }: DayOrganizerProps) {
           className="w-full mt-3 h-9 text-xs"
           onClick={() => setIsTaskFormOpen(true)}
         >
-          <Plus className="h-3.5 w-3.5 mr-1.5" /> Añadir tarea
+          <Plus className="h-3.5 w-3.5 mr-1" /> Añadir tarea
         </Button>
 
         {/* Completed Section */}
         {completedTasks.length > 0 && (
-          <div className="mt-4 pt-3 border-t">
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2">
-              Completadas hoy ({completedTasks.length})
+          <div className="mt-3 pt-3 border-t">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1.5">
+              Hechas ({completedTasks.length})
             </p>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {completedTasks.slice(0, 2).map((task) => (
-                <div key={task.id} className="flex items-center gap-2 text-xs text-muted-foreground py-1">
-                  <Check className="h-3 w-3 text-green-500" />
+                <div key={task.id} className="flex items-center gap-2 text-xs text-muted-foreground py-0.5">
+                  <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
                   <span className="line-through truncate">{task.title}</span>
                 </div>
               ))}
