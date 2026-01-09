@@ -16,11 +16,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const navItems = [
-  { href: "/", label: "Home", icon: LayoutDashboard },
-  { href: "/nutrition", label: "Nutri", icon: Utensils },
+  { href: "/dashboard", label: "Home", icon: LayoutDashboard },
+  { href: "/dashboard/nutrition", label: "Nutri", icon: Utensils },
   { href: "ACTION", label: "", icon: Plus }, // Placeholder for FAB
-  { href: "/fitness", label: "Fit", icon: Dumbbell },
-  { href: "/tasks", label: "Tasks", icon: CheckSquare },
+  { href: "/dashboard/fitness", label: "Fit", icon: Dumbbell },
+  { href: "/dashboard/tasks", label: "Tasks", icon: CheckSquare },
 ];
 
 export function BottomNav() {
@@ -29,9 +29,9 @@ export function BottomNav() {
   const [isFabOpen, setIsFabOpen] = useState(false);
 
   const actions = [
-    { icon: Utensils, label: "Comida", href: "/nutrition/meals", color: "bg-emerald-500" },
-    { icon: CheckSquare, label: "Tarea", href: "/tasks", color: "bg-amber-500" },
-    { icon: Dumbbell, label: "Entreno", href: "/fitness/workout", color: "bg-blue-500" },
+    { icon: Utensils, label: "Comida", href: "/dashboard/nutrition/meals", color: "bg-emerald-500" },
+    { icon: CheckSquare, label: "Tarea", href: "/dashboard/tasks", color: "bg-amber-500" },
+    { icon: Dumbbell, label: "Entreno", href: "/dashboard/fitness/workout", color: "bg-blue-500" },
   ];
 
   const handleAction = (href: string) => {
@@ -95,8 +95,8 @@ export function BottomNav() {
           }
 
           const isActive =
-            item.href === "/"
-              ? pathname === "/"
+            item.href === "/dashboard"
+              ? pathname === "/dashboard"
               : pathname.startsWith(item.href);
 
           return (

@@ -58,11 +58,11 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // If user is not signed in and the current path is not /login or /register, redirect the user to /login
+  // If user is not signed in and the current path is not /login or /register, redirect the user to /auth/login
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/register") &&
+    !request.nextUrl.pathname.startsWith("/auth/login") &&
+    !request.nextUrl.pathname.startsWith("/auth/register") &&
     !request.nextUrl.pathname.startsWith("/auth")
   ) {
     // Check if it's a static asset or API route, etc.
@@ -73,19 +73,19 @@ export async function updateSession(request: NextRequest) {
     // Better logic: if user is not logged in and tries to access dashboard routes
     // For now, let's protect everything.
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = "/auth/login";
     return NextResponse.redirect(url);
   }
 
-  // If user is signed in and the current path is /login or /register, redirect the user to /
-  if (user && (request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/register"))) {
+  // If user is signed in and the current path is /auth/login or /auth/register, redirect the user to /dashboard
+  if (user && (request.nextUrl.pathname.startsWith("/auth/login") || request.nextUrl.pathname.startsWith("/auth/register"))) {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 
   // Check onboarding status
-  if (user && !request.nextUrl.pathname.startsWith("/setup")) {
+  if (user && !request.nextUrl.pathname.startsWith("/onboarding/setup")) {
     const { data: profile } = await supabase
       .from("user_profiles")
       .select("full_name")
@@ -94,7 +94,7 @@ export async function updateSession(request: NextRequest) {
 
     if (!profile?.full_name) {
       const url = request.nextUrl.clone();
-      url.pathname = "/setup";
+      url.pathname = "/onboarding/setup";
       return NextResponse.redirect(url);
     }
   }
