@@ -24,7 +24,7 @@ export default async function DashboardPage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <WelcomeHeader userName={data.user.full_name || "Usuario"} />
       
       <SmartSuggestions suggestions={suggestions} />
@@ -47,26 +47,32 @@ export default async function DashboardPage() {
         }}
       />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Main Column - Timeline */}
-        <div className="space-y-6 lg:col-span-2">
+      {/* Mobile: Stack vertically, Desktop: Grid */}
+      <div className="space-y-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0">
+        {/* Main Content - Tasks */}
+        <div className="lg:col-span-2">
           <DayOrganizer tasks={data.tasks.today} />
         </div>
 
-        {/* Sidebar Column - Habits & Summary */}
-        <div className="space-y-6">
+        {/* Sidebar - Habits */}
+        <div className="lg:col-span-1">
           <TodayHabits habits={data.habits.list} />
-          
-          <div className="grid gap-6 md:grid-cols-1">
-            <NutritionSummary
-              summary={data.nutrition.summary}
-              meals={data.nutrition.meals}
-            />
-            <FitnessSummary
-              lastWorkout={data.fitness.lastWorkout}
-              stats={data.fitness}
-            />
-          </div>
+        </div>
+      </div>
+
+      {/* Summary Cards - Always horizontal scroll on mobile */}
+      <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 sm:overflow-visible">
+        <div className="min-w-[280px] sm:min-w-0">
+          <NutritionSummary
+            summary={data.nutrition.summary}
+            meals={data.nutrition.meals}
+          />
+        </div>
+        <div className="min-w-[280px] sm:min-w-0">
+          <FitnessSummary
+            lastWorkout={data.fitness.lastWorkout}
+            stats={data.fitness}
+          />
         </div>
       </div>
     </div>

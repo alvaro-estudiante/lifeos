@@ -112,7 +112,7 @@ export async function startWorkout(routineId?: string) {
     }
   }
 
-  revalidatePath("/fitness/workout");
+  revalidatePath("/dashboard/fitness/workout");
   return workout;
 }
 
@@ -138,7 +138,7 @@ export async function addExerciseToWorkout(workoutId: string, exerciseId: string
     });
 
   if (error) throw new Error(error.message);
-  revalidatePath("/fitness/workout");
+  revalidatePath("/dashboard/fitness/workout");
 }
 
 export async function addSet(workoutExerciseId: string, setData: Partial<WorkoutSet>) {
@@ -166,7 +166,7 @@ export async function addSet(workoutExerciseId: string, setData: Partial<Workout
     });
 
   if (error) throw new Error(error.message);
-  revalidatePath("/fitness/workout");
+  revalidatePath("/dashboard/fitness/workout");
 }
 
 export async function updateSet(setId: string, data: Partial<WorkoutSet>) {
@@ -177,7 +177,7 @@ export async function updateSet(setId: string, data: Partial<WorkoutSet>) {
     .eq("id", setId);
 
   if (error) throw new Error(error.message);
-  revalidatePath("/fitness/workout");
+  revalidatePath("/dashboard/fitness/workout");
 }
 
 export async function deleteSet(setId: string) {
@@ -188,7 +188,7 @@ export async function deleteSet(setId: string) {
     .eq("id", setId);
 
   if (error) throw new Error(error.message);
-  revalidatePath("/fitness/workout");
+  revalidatePath("/dashboard/fitness/workout");
 }
 
 export async function finishWorkout(workoutId: string, summaryData: any) {
@@ -203,8 +203,8 @@ export async function finishWorkout(workoutId: string, summaryData: any) {
     .eq("id", workoutId);
 
   if (error) throw new Error(error.message);
-  revalidatePath("/fitness/workout");
-  revalidatePath("/fitness/history");
+  revalidatePath("/dashboard/fitness/workout");
+  revalidatePath("/dashboard/fitness/history");
 }
 
 export async function getLastWorkoutForExercise(exerciseId: string) {

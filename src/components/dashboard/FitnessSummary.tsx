@@ -1,10 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Dumbbell, Calendar, TrendingUp, Flame } from "lucide-react";
+import { ChevronRight, Dumbbell, Calendar, TrendingUp, Flame, Play } from "lucide-react";
 import Link from "next/link";
 import { Workout } from "@/lib/actions/workouts";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
 interface FitnessSummaryProps {
   lastWorkout: Workout | null;
@@ -16,47 +17,63 @@ interface FitnessSummaryProps {
 
 export function FitnessSummary({ lastWorkout, stats }: FitnessSummaryProps) {
   const lastWorkoutText = lastWorkout
-    ? `Hace ${formatDistanceToNow(new Date(lastWorkout.workout_date), { locale: es })}`
-    : "Sin actividad reciente";
+    ? formatDistanceToNow(new Date(lastWorkout.workout_date), { locale: es, addSuffix: true })
+    : "Sin actividad";
+
+  const statItems = [
+    {
+      icon: Calendar,
+      label: "Último entreno",
+      value: lastWorkoutText,
+      color: "text-muted-foreground",
+    },
+    {
+      icon: Flame,
+      label: "Racha",
+      value: `${stats.streak} días`,
+      color: "text-orange-500",
+    },
+    {
+      icon: TrendingUp,
+      label: "Vol. semanal",
+      value: `${stats.weeklyVolume.toLocaleString()} kg`,
+      color: "text-green-500",
+    },
+  ];
 
   return (
     <Card className="h-full flex flex-col">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
+      <CardHeader className="flex flex-row items-center justify-between pb-2 px-4">
+        <div className="flex items-center gap-2">
           <Dumbbell className="h-5 w-5 text-blue-500" />
-          Fitness
-        </CardTitle>
+          <CardTitle className="text-base font-semibold">Fitness</CardTitle>
+        </div>
+        <Link 
+          href="/dashboard/fitness"
+          className="text-xs text-primary flex items-center gap-1 hover:underline"
+        >
+          Ver más <ChevronRight className="h-3 w-3" />
+        </Link>
       </CardHeader>
-      <CardContent className="flex-1 flex flex-col gap-4">
+      <CardContent className="flex-1 flex flex-col px-4 pb-4">
+        {/* Stats */}
         <div className="space-y-3 flex-1">
-          <div className="flex items-center gap-3">
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-            <div>
-              <div className="text-sm font-medium">Último entreno</div>
-              <div className="text-xs text-muted-foreground">{lastWorkoutText}</div>
+          {statItems.map(({ icon: Icon, label, value, color }) => (
+            <div key={label} className="flex items-center justify-between py-1">
+              <div className="flex items-center gap-2">
+                <Icon className={cn("h-4 w-4", color)} />
+                <span className="text-sm text-muted-foreground">{label}</span>
+              </div>
+              <span className="text-sm font-medium">{value}</span>
             </div>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <Flame className="h-4 w-4 text-orange-500" />
-            <div>
-              <div className="text-sm font-medium">Racha actual</div>
-              <div className="text-xs text-muted-foreground">{stats.streak} días seguidos</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <TrendingUp className="h-4 w-4 text-green-500" />
-            <div>
-              <div className="text-sm font-medium">Volumen semanal</div>
-              <div className="text-xs text-muted-foreground">{stats.weeklyVolume.toLocaleString()} kg</div>
-            </div>
-          </div>
+          ))}
         </div>
 
-        <Button asChild className="w-full mt-auto">
+        {/* CTA Button */}
+        <Button asChild size="sm" className="w-full mt-3 gap-2">
           <Link href="/dashboard/fitness/workout">
-            Entrenar ahora <ArrowRight className="ml-2 h-4 w-4" />
+            <Play className="h-4 w-4" />
+            Entrenar
           </Link>
         </Button>
       </CardContent>

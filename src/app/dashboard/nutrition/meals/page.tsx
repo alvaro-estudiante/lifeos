@@ -37,7 +37,7 @@ export default async function MealsPage({ searchParams }: MealsPageProps) {
     const prevDay = new Date(displayDate);
     prevDay.setDate(prevDay.getDate() - 1);
     await copyMealsFromDate(prevDay.toISOString().split("T")[0], date);
-    revalidatePath("/nutrition/meals");
+    revalidatePath("/dashboard/nutrition/meals");
   }
 
   return (

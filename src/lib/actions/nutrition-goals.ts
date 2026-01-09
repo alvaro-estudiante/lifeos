@@ -57,6 +57,6 @@ export async function updateNutritionGoals(goals: Partial<NewNutritionGoals>) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/nutrition");
-  revalidatePath("/nutrition/goals");
+  revalidatePath("/dashboard/nutrition");
+  revalidatePath("/dashboard/nutrition/goals");
 }

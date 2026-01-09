@@ -78,7 +78,7 @@ export async function createRoutine(routine: NewRoutine) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/fitness/routines");
+  revalidatePath("/dashboard/fitness/routines");
 }
 
 export async function createRoutineFromTemplate(templateId: string) {
@@ -105,7 +105,7 @@ export async function createRoutineFromTemplate(templateId: string) {
     
   if (error) throw new Error(error.message);
   
-  revalidatePath('/fitness/routines');
+  revalidatePath('/dashboard/fitness/routines');
   return data as Routine;
 }
 
@@ -126,8 +126,8 @@ export async function updateRoutine(id: string, routine: Partial<NewRoutine>) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/fitness/routines");
-  revalidatePath(`/fitness/routines/${id}`);
+  revalidatePath("/dashboard/fitness/routines");
+  revalidatePath(`/dashboard/fitness/routines/${id}`);
 }
 
 export async function deleteRoutine(id: string) {
@@ -144,7 +144,7 @@ export async function deleteRoutine(id: string) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/fitness/routines");
+  revalidatePath("/dashboard/fitness/routines");
 }
 
 export async function setActiveRoutine(id: string) {
@@ -168,5 +168,5 @@ export async function setActiveRoutine(id: string) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/fitness/routines");
+  revalidatePath("/dashboard/fitness/routines");
 }

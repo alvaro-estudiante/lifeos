@@ -8,19 +8,26 @@ interface WelcomeHeaderProps {
 export function WelcomeHeader({ userName }: WelcomeHeaderProps) {
   const hour = new Date().getHours();
   let greeting = "Buenos días";
-  if (hour >= 12 && hour < 20) greeting = "Buenas tardes";
-  if (hour >= 20) greeting = "Buenas noches";
+  let emoji = "☀️";
+  if (hour >= 12 && hour < 20) {
+    greeting = "Buenas tardes";
+    emoji = "🌤️";
+  }
+  if (hour >= 20) {
+    greeting = "Buenas noches";
+    emoji = "🌙";
+  }
+
+  const firstName = userName.split(" ")[0];
 
   return (
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          {greeting}, {userName} 👋
-        </h1>
-        <p className="text-muted-foreground">
-          {format(new Date(), "EEEE, d 'de' MMMM", { locale: es })}
-        </p>
-      </div>
+    <div className="flex flex-col gap-1">
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+        {greeting}, {firstName} {emoji}
+      </h1>
+      <p className="text-sm sm:text-base text-muted-foreground capitalize">
+        {format(new Date(), "EEEE, d 'de' MMMM", { locale: es })}
+      </p>
     </div>
   );
 }

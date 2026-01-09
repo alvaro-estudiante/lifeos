@@ -65,5 +65,5 @@ export async function logSleep(sleep: NewSleepLog) {
 
   if (error) throw new Error(error.message);
 
-  revalidatePath("/tasks/today");
+  revalidatePath("/dashboard/tasks/today");
 }

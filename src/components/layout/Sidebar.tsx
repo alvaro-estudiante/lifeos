@@ -89,7 +89,12 @@ export function Sidebar() {
       )}
     >
       <div className="flex h-14 items-center justify-between border-b px-4">
-        {!collapsed && <span className="font-bold text-xl">LifeOS</span>}
+        {!collapsed && (
+          <div className="flex flex-col">
+            <span className="font-bold text-xl">Life OS</span>
+            <span className="text-[10px] text-muted-foreground -mt-1">by Álvaro Fernández</span>
+          </div>
+        )}
         <Button
           variant="ghost"
           size="icon"
